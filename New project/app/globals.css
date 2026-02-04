@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-fog text-ink;
+}
+
+input, textarea, select {
+  @apply outline-none;
+}
+
+a {
+  @apply text-river;
+}
