@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Roselle Companion Prototype</title>
+  <style>
+    :root {
+      --bg: #f7f7f4;
+      --panel: #ffffff;
+      --ink: #111827;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --accent: #1d4ed8;
+      --safe: #047857;
+      --warn: #b45309;
+      --soft: #eef2ff;
+      --shadow: 0 12px 30px rgba(17, 24, 39, .08);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); }
+    button, input, textarea, select { font: inherit; }
+    .shell { max-width: 430px; margin: 0 auto; min-height: 100vh; background: linear-gradient(180deg, #ffffff 0%, var(--bg) 35%); border-left: 1px solid var(--line); border-right: 1px solid var(--line); position: relative; padding-bottom: 96px; }
+    header { position: sticky; top: 0; z-index: 10; padding: 18px 18px 12px; backdrop-filter: blur(16px); background: rgba(255,255,255,.86); border-bottom: 1px solid rgba(229,231,235,.8); }
+    .topline { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    h1 { font-size: 24px; line-height: 1.1; margin: 0; letter-spacing: -.03em; }
+    .sub { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+    .avatar { width: 42px; height: 42px; border-radius: 16px; display: grid; place-items: center; background: var(--soft); color: var(--accent); font-weight: 800; }
+    .tabs { display: flex; gap: 8px; overflow: auto; padding: 12px 18px 4px; scrollbar-width: none; }
+    .tabs::-webkit-scrollbar { display:none; }
+    .tab { border: 1px solid var(--line); background: var(--panel); padding: 9px 12px; border-radius: 999px; white-space: nowrap; color: #374151; cursor: pointer; }
+    .tab.active { background: #111827; color: white; border-color: #111827; }
+    main { padding: 14px 18px 28px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 22px; padding: 16px; box-shadow: var(--shadow); margin-bottom: 14px; }
+    .hero { background: radial-gradient(circle at 20% 0%, #dbeafe 0%, transparent 38%), #111827; color: white; border: 0; }
+    .hero h2 { margin: 0 0 8px; font-size: 24px; line-height: 1.08; letter-spacing: -.04em; }
+    .hero p { margin: 0; color: #d1d5db; line-height: 1.45; }
+    .section-title { display:flex; align-items:center; justify-content:space-between; margin: 20px 0 10px; }
+    .section-title h2 { margin: 0; font-size: 17px; }
+    .section-title span { color: var(--muted); font-size: 12px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { border: 1px solid var(--line); border-radius: 999px; padding: 8px 10px; background: white; color: #374151; cursor: pointer; user-select: none; font-size: 13px; }
+    .chip.active { border-color: var(--accent); background: #eff6ff; color: #1d4ed8; font-weight: 700; }
+    .feed-card { display: grid; grid-template-columns: 42px 1fr; gap: 12px; }
+    .icon { width: 42px; height: 42px; border-radius: 15px; display: grid; place-items: center; background: #f3f4f6; font-size: 21px; }
+    .feed-card h3 { margin: 0 0 4px; font-size: 15px; }
+    .feed-card p { margin: 0; color: #4b5563; line-height: 1.4; font-size: 13px; }
+    .meta { display:flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+    .pill { font-size: 11px; color: #374151; border: 1px solid var(--line); border-radius: 999px; padding: 4px 7px; background: #fafafa; }
+    .pill.official { color: var(--safe); border-color: #a7f3d0; background: #ecfdf5; }
+    .pill.unverified { color: var(--warn); border-color: #fde68a; background: #fffbeb; }
+    .pill.personal { color: #6d28d9; border-color: #ddd6fe; background: #f5f3ff; }
+    .notice { border-left: 4px solid var(--warn); box-shadow: none; }
+    .tiny { font-size: 12px; color: var(--muted); line-height: 1.45; }
+    .note-form { display: grid; gap: 10px; }
+    textarea { width:100%; min-height: 90px; border:1px solid var(--line); border-radius: 16px; padding: 12px; resize: vertical; background:#fafafa; }
+    select, input { border:1px solid var(--line); border-radius: 14px; padding: 10px; background:#fff; }
+    .row { display:flex; gap: 8px; }
+    .row > * { flex: 1; }
+    .primary { border:0; background:#111827; color:white; padding: 11px 14px; border-radius: 15px; font-weight: 800; cursor:pointer; }
+    .bottom-nav { position: fixed; left: 50%; bottom: 12px; transform: translateX(-50%); max-width: 410px; width: calc(100% - 28px); background: rgba(255,255,255,.92); border: 1px solid var(--line); border-radius: 24px; box-shadow: var(--shadow); display: grid; grid-template-columns: repeat(5, 1fr); padding: 8px; backdrop-filter: blur(16px); }
+    .nav-btn { border:0; background:transparent; border-radius: 16px; padding: 8px 3px; color:var(--muted); display:grid; gap:2px; justify-items:center; font-size: 11px; cursor:pointer; }
+    .nav-btn span:first-child { font-size:18px; }
+    .nav-btn.active { background:#111827; color:#fff; }
+    .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .mini { padding: 12px; border-radius: 18px; background:#fff; border:1px solid var(--line); }
+    .mini strong { display:block; font-size: 13px; margin-bottom: 4px; }
+    .mini span { color:var(--muted); font-size:12px; }
+    .hidden { display:none; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="topline">
+        <div>
+          <h1>Roselle Companion</h1>
+          <p class="sub">Personalized local life + civic awareness</p>
+        </div>
+        <div class="avatar">RC</div>
+      </div>
+    </header>
+
+    <div class="tabs" id="tabs"></div>
+
+    <main>
+      <section class="card hero">
+        <h2 id="heroTitle">What matters to you in Roselle today?</h2>
+        <p id="heroText">Pick your interests and this feed will prioritize events, stores, safety, resources, and civic updates around you.</p>
+      </section>
+
+      <section id="interestsPanel" class="card">
+        <div class="section-title" style="margin-top:0">
+          <h2>Your interests</h2>
+          <span>personalization</span>
+        </div>
+        <div class="chips" id="chips"></div>
+      </section>
+
+      <section id="feedPanel">
+        <div class="section-title">
+          <h2 id="feedTitle">For You in Roselle</h2>
+          <span id="feedCount"></span>
+        </div>
+        <div id="feed"></div>
+      </section>
+
+      <section id="notePanel" class="card hidden">
+        <div class="section-title" style="margin-top:0">
+          <h2>Civic notebook</h2>
+          <span>save anything</span>
+        </div>
+        <div class="note-form">
+          <textarea id="noteText" placeholder="Paste a Citizen note, borough alert, local issue, place you want to try, or civic idea..."></textarea>
+          <div class="row">
+            <select id="noteTag">
+              <option>Safety</option><option>Food</option><option>Music</option><option>Art</option><option>Wellness</option><option>Civic</option><option>Resources</option><option>Stores</option>
+            </select>
+            <button class="primary" id="saveNote">Save note</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="notesList"></section>
+
+      <section id="sourcePanel" class="card notice">
+        <strong>Source rule</strong>
+        <p class="tiny">Emergency and safety content should be labeled clearly: official, public source, personal note, or unverified. This prototype is not an emergency service.</p>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" id="bottomNav"></nav>
+  </div>
+
+  <script>
+    const state = {
+      screen: localStorage.getItem('rc_screen') || 'Today',
+      interests: JSON.parse(localStorage.getItem('rc_interests') || '["Safety","Music","Food","Civic","Resources"]'),
+      notes: JSON.parse(localStorage.getItem('rc_notes') || '[]')
+    };
+
+    const screens = [
+      { name: 'Today', icon: '☀️' },
+      { name: 'For You', icon: '✨' },
+      { name: 'Safety', icon: '🛡️' },
+      { name: 'Civic', icon: '🏛️' },
+      { name: 'Notes', icon: '📝' }
+    ];
+
+    const interests = ['Safety','Local events','Food','Stores','Music','Art','Wellness','Spirituality','Jobs','Housing','Civic','Voting','Transit','Resources','Volunteering'];
+
+    const cards = [
+      { screen:['Today','Safety'], icon:'🛡️', title:'Check official safety channels', body:'Roselle residents can use local emergency channels like borough alerts, Nixle, and county alert systems. Treat third-party posts as unverified until matched with an official/public source.', tags:['Safety'], source:'official', sourceText:'official/public' },
+      { screen:['Today','For You'], icon:'🎤', title:'Music nearby', body:'Look for open mics, small venue events, Union County arts calendars, and Ticketmaster/Meetup results within a 10–20 mile radius.', tags:['Music','Local events'], source:'public', sourceText:'recommendation' },
+      { screen:['Today','For You'], icon:'🍽️', title:'Restaurants to try', body:'Use your taste profile to pull restaurants, cafes, grocery spots, and bakeries from Google Places or Yelp around Roselle.', tags:['Food','Stores'], source:'public', sourceText:'public API' },
+      { screen:['Today','Civic'], icon:'🏛️', title:'Borough agenda watcher', body:'Track Roselle council agendas, minutes, and public notices so local decisions become easier to follow.', tags:['Civic','Voting'], source:'official', sourceText:'official source' },
+      { screen:['For You'], icon:'🎨', title:'Creative life feed', body:'Prioritize art shows, creative workshops, music events, galleries, libraries, and local cultural spaces that match your creative interests.', tags:['Art','Music','Local events'], source:'public', sourceText:'personalized' },
+      { screen:['For You'], icon:'🧘', title:'Wellness + spirituality', body:'Surface parks, meditation spaces, yoga studios, community wellness events, and calm weekend ideas nearby.', tags:['Wellness','Spirituality'], source:'public', sourceText:'personalized' },
+      { screen:['Civic'], icon:'🗳️', title:'Election reminders', body:'Pull county and state election pages for voter registration deadlines, sample ballots, early voting, and polling-place tools.', tags:['Voting','Civic'], source:'official', sourceText:'official source' },
+      { screen:['Civic'], icon:'🤝', title:'Resource navigator', body:'Connect users to NJ 211, county services, food help, utility aid, job help, legal aid, and housing resources.', tags:['Resources','Housing','Jobs'], source:'official', sourceText:'official/public' },
+      { screen:['Safety'], icon:'🌧️', title:'Weather + flood alerts', body:'National Weather Service alerts can be pulled by Roselle coordinates and labeled as official emergency/weather information.', tags:['Safety','Transit'], source:'official', sourceText:'official API' },
+      { screen:['Safety'], icon:'📝', title:'Community report intake', body:'Let users save screenshots or notes from apps like Citizen, but mark them as personal or unverified until matched against official sources.', tags:['Safety'], source:'unverified', sourceText:'personal/unverified' }
+    ];
+
+    function persist() {
+      localStorage.setItem('rc_screen', state.screen);
+      localStorage.setItem('rc_interests', JSON.stringify(state.interests));
+      localStorage.setItem('rc_notes', JSON.stringify(state.notes));
+    }
+
+    function renderNav() {
+      tabs.innerHTML = screens.map(s => `<button class="tab ${state.screen === s.name ? 'active' : ''}" onclick="setScreen('${s.name}')">${s.name}</button>`).join('');
+      bottomNav.innerHTML = screens.map(s => `<button class="nav-btn ${state.screen === s.name ? 'active' : ''}" onclick="setScreen('${s.name}')"><span>${s.icon}</span><span>${s.name}</span></button>`).join('');
+    }
+
+    function renderChips() {
+      chips.innerHTML = interests.map(i => `<button class="chip ${state.interests.includes(i) ? 'active' : ''}" onclick="toggleInterest('${i}')">${i}</button>`).join('');
+    }
+
+    function cardMatches(item) {
+      if (state.screen !== 'Today' && !item.screen.includes(state.screen)) return false;
+      if (state.screen === 'For You') return item.tags.some(t => state.interests.includes(t));
+      return item.screen.includes(state.screen) || item.tags.some(t => state.interests.includes(t));
+    }
+
+    function renderFeed() {
+      const filtered = cards.filter(cardMatches);
+      feedTitle.textContent = state.screen === 'Notes' ? 'Saved notes' : `${state.screen} in Roselle`;
+      feedCount.textContent = state.screen === 'Notes' ? `${state.notes.length} saved` : `${filtered.length} cards`;
+      feed.innerHTML = state.screen === 'Notes' ? '' : filtered.map(item => `
+        <article class="card feed-card">
+          <div class="icon">${item.icon}</div>
+          <div>
+            <h3>${item.title}</h3>
+            <p>${item.body}</p>
+            <div class="meta">
+              ${item.tags.map(tag => `<span class="pill">${tag}</span>`).join('')}
+              <span class="pill ${item.source === 'official' ? 'official' : item.source === 'unverified' ? 'unverified' : 'personal'}">${item.sourceText}</span>
+            </div>
+          </div>
+        </article>`).join('');
+    }
+
+    function renderNotes() {
+      notePanel.classList.toggle('hidden', state.screen !== 'Notes');
+      notesList.innerHTML = state.screen !== 'Notes' ? '' : state.notes.map((note, index) => `
+        <article class="card feed-card">
+          <div class="icon">📝</div>
+          <div>
+            <h3>${note.tag}</h3>
+            <p>${note.text}</p>
+            <div class="meta"><span class="pill personal">personal note</span><span class="pill">${note.created}</span></div>
+            <button class="chip" style="margin-top:10px" onclick="deleteNote(${index})">Delete</button>
+          </div>
+        </article>`).join('');
+    }
+
+    function renderHero() {
+      const copy = {
+        Today: ['What matters to you in Roselle today?', 'Pick your interests and this feed will prioritize events, stores, safety, resources, and civic updates around you.'],
+        'For You': ['A local feed that learns your taste.', 'Music, art, food, wellness, stores, civic updates, and resources without drowning you in fear-based alerts.'],
+        Safety: ['Calm safety, not panic.', 'Official/public sources first. Community notes stay labeled until verified.'],
+        Civic: ['Make local government easier to follow.', 'Track meetings, voting info, public notices, and resources in plain English.'],
+        Notes: ['Your Roselle notebook.', 'Save places, alerts, issues, ideas, screenshots, and links. Every note gets a source label.']
+      }[state.screen];
+      heroTitle.textContent = copy[0];
+      heroText.textContent = copy[1];
+    }
+
+    window.setScreen = (screen) => { state.screen = screen; persist(); render(); };
+    window.toggleInterest = (interest) => {
+      state.interests = state.interests.includes(interest) ? state.interests.filter(i => i !== interest) : [...state.interests, interest];
+      persist(); render();
+    };
+    window.deleteNote = (index) => { state.notes.splice(index, 1); persist(); render(); };
+
+    saveNote.onclick = () => {
+      const text = noteText.value.trim();
+      if (!text) return;
+      state.notes.unshift({ text, tag: noteTag.value, created: new Date().toLocaleString() });
+      noteText.value = '';
+      persist();
+      render();
+    };
+
+    function render() {
+      renderNav();
+      renderChips();
+      renderHero();
+      renderFeed();
+      renderNotes();
+      interestsPanel.classList.toggle('hidden', state.screen === 'Notes');
+    }
+    render();
+  </script>
+</body>
+</html>
