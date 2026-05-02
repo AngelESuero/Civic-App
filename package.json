@@ -1,0 +1,14 @@
+{
+  "name": "roselle-companion-prototype",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Mobile-first Roselle civic/local-life companion prototype plus optional API aggregator starter.",
+  "scripts": {
+    "start": "node server-starter.js"
+  },
+  "dependencies": {
+    "cors": "latest",
+    "dotenv": "latest",
+    "express": "latest"
+  }
+}
